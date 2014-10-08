@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/binary"
-	"github.com/extrame/syler/huawei/portal"
+	"github.com/xjplke/syler/huawei/portal"
 	"net"
 )
 

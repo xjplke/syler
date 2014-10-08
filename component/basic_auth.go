@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"crypto/md5"
 	"fmt"
-	"github.com/extrame/syler/config"
-	"github.com/extrame/syler/i"
+	"github.com/xjplke/syler/config"
+	"github.com/xjplke/syler/i"
 	"log"
+	"strings"
 	"net"
 	"net/http"
 	"strconv"
@@ -71,13 +72,23 @@ func (a *AuthServer) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		var to uint64
 		to, err = strconv.ParseUint(timeout, 10, 32)
 
+		if *config.UseRemoteIpAsUserIp == true && userip_str == "" {
+			userip_str = r.Header.Get("X-Forwarded-For")	
+			if userip_str != "" {
+				userip_str = strings.Split(userip_str,",")[0];				
+				log.Println("Get Userip from X-Forwarded-For "+userip_str)
+			}else{	
+				ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+				userip_str = ip;	
+			}	
+		} 
+	
 		userip := net.ParseIP(userip_str)
-		if *config.UseRemoteIpAsUserIp == true {
-			ip, _, _ := net.SplitHostPort(r.RemoteAddr)
-			userip = net.ParseIP(ip)
-		} else if userip == nil {
+	
+		if userip == nil {
 			err = fmt.Errorf("配置错误！请联系管理员")
 		}
+		
 		var full_username []byte
 		if userip != nil {
 			if basip := net.ParseIP(nas); basip != nil {

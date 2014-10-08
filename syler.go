@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/extrame/syler/component"
-	"github.com/extrame/syler/config"
+	"github.com/xjplke/syler/component"
+	"github.com/xjplke/syler/config"
 	toml "github.com/stvp/go-toml-config"
 	"path/filepath"
 )

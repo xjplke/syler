@@ -2,8 +2,8 @@ package component
 
 import (
 	"fmt"
-	"github.com/extrame/syler/config"
-	"github.com/extrame/syler/i"
+	"github.com/xjplke/syler/config"
+	"github.com/xjplke/syler/i"
 	"log"
 	"net"
 	"net/http"
