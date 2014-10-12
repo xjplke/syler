@@ -6,6 +6,7 @@ import (
 	"github.com/xjplke/syler/i"
 	"log"
 	"net"
+	"strings"
 	"net/http"
 	"path/filepath"
 	"runtime/debug"
@@ -37,8 +38,29 @@ func StartHttp() {
 			ErrorWrap(w)
 		}()
 		var err error
-		nas := r.FormValue("nasip") //TODO
-		userip_str := r.FormValue("userip")
+		log.Println("handle logout!")	
+		//nas := r.FormValue("nasip") //TODO
+		//userip_str := r.FormValue("userip")
+		
+		nas := r.FormValue("nasip")
+                if *config.NasIp != "" {
+                        nas = *config.NasIp
+                }
+                userip_str := r.FormValue("userip")
+
+                if *config.UseRemoteIpAsUserIp == true && userip_str == "" {
+                        userip_str = r.Header.Get("X-Forwarded-For")
+                        if userip_str != "" {
+                                userip_str = strings.Split(userip_str,",")[0];
+                                log.Println("Get Userip from X-Forwarded-For "+userip_str)
+                        }else{
+                                ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+                                userip_str = ip;
+                        }      
+                }
+
+		log.Println("userip = "+userip_str)	
+		log.Println("nasip = "+nas)	
 		if userip := net.ParseIP(userip_str); userip != nil {
 			if basip := net.ParseIP(nas); basip != nil {
 				if _, err = Logout(userip, *config.HuaweiSecret, basip); err == nil {

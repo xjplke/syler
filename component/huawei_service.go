@@ -46,6 +46,7 @@ func Auth(userip net.IP, basip net.IP, timeout uint32, username, userpwd []byte)
 }
 
 func Logout(userip net.IP, secret string, basip net.IP) (response portal.Message, err error) {
+	log.Println("basip = "+basip.String()+";userip = "+userip.String())
 	return portal.Logout(userip, *config.HuaweiSecret, basip, *config.HuaweiNasPort)
 }
 
